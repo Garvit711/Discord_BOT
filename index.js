@@ -5,8 +5,8 @@ const {main} = require("./Gemini")
 const {talk} = require("./command")
 
 
-const token = process.env.TOKEN || require('./configure/config.json').token;
-const apiKey = process.env.API_KEY || require('./configure/config.json').apiKey;
+const token = process.env.TOKEN;
+const apiKey = process.env.API_KEY;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
