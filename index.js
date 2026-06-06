@@ -23,3 +23,13 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
   })
 
 client.login(token);
+
+const http = require('http');
+const PORT = process.env.PORT || 3000;
+
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Bot is running alive!\n');
+}).listen(PORT, () => {
+  console.log(`Dummy server listening on port ${PORT}`);
+});
