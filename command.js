@@ -3,7 +3,7 @@ const {token} = require("./config.json")
 const {main} = require("./Gemini")
 const command = new SlashCommandBuilder()
   .setName("garvit")
-  .setDescription("talk to gp birla scholar garvit bot")
+  .setDescription("talk to garvit bot")
   .addStringOption((option)=>
     option.setName('input').setDescription("Write your message").setRequired(true)
   )
