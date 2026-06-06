@@ -1,6 +1,10 @@
 const { REST, Routes , SlashCommandBuilder} = require('discord.js');
-const {token} = require("./config.json")
+// const {token} = require("./config.json")
 const {main} = require("./Gemini")
+
+const token = process.env.TOKEN || require('./configure/config.json').token;
+const apiKey = process.env.API_KEY || require('./configure/config.json').apiKey;
+
 const command = new SlashCommandBuilder()
   .setName("garvit")
   .setDescription("talk to garvit bot")

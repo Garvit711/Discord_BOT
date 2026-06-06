@@ -1,8 +1,12 @@
 
 const { Client, Events, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
-const { token } = require('./config.json');
+// const { token } = require('./config.json');
 const {main} = require("./Gemini")
 const {talk} = require("./command")
+
+
+const token = process.env.TOKEN || require('./configure/config.json').token;
+const apiKey = process.env.API_KEY || require('./configure/config.json').apiKey;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
