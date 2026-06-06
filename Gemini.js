@@ -1,5 +1,5 @@
 const { GoogleGenAI } =  require("@google/genai");
-const { api } = require("./config.json")
+// const { api } = require("./config.json")
 
 
 const token = process.env.TOKEN;
