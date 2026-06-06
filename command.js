@@ -37,11 +37,11 @@ const rest = new REST({ version: '10' }).setToken(token);
          await interaction.deferReply();
         try{
         const userInput = interaction.options.getString('input');
-          const reply = await main(userInput, interaction.user.username)
+          let reply = await main(userInput, interaction.user.username || "user")
           await interaction.editReply(`${reply}`)
         }
         catch(error){
-            console.log("talk function error")
+            console.log(`talk error ${error}`)
             await interaction.editReply(`I ran into an error`);
         }
     }
