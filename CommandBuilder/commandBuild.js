@@ -1,6 +1,7 @@
 const { REST, Routes , SlashCommandBuilder} = require('discord.js');
 // const {token} = require("./config.json")
-const {main} = require("./Gemini")
+// const { token, apiKey } = require("../config.json")
+const {main, main2} = require("../Gemini_API/Gemini")
 
 const token = process.env.TOKEN;
 const apiKey = process.env.API_KEY;
@@ -29,21 +30,3 @@ const rest = new REST({ version: '10' }).setToken(token);
         console.error(error);
     }
 })();
-
-  async function talk(interaction){
-    if (!interaction.isChatInputCommand()) return;
-   
-    if(interaction.commandName === 'garvit'){
-         await interaction.deferReply();
-        try{
-        const userInput = interaction.options.getString('input');
-          let reply = await main(userInput, interaction.user.username || "user")
-          await interaction.editReply(`${reply}`)
-        }
-        catch(error){
-            console.log(`talk error ${error}`)
-            await interaction.editReply(`I ran into an error`);
-        }
-    }
-  }
-  module.exports = {talk};
