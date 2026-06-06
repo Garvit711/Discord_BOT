@@ -1,22 +1,25 @@
 
 const { Client, Events, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
-// const { token } = require('./config.json');
-const {main} = require("./Gemini")
-const {talk} = require("./command")
-
+// const { token , apiKey} = require('./config.json');
+const {main, main2 } = require("./Gemini_API/Gemini")
+const { talk } = require("./Controllers/commandTalk")
+const { normalChats } = require("./Controllers/normalChat");
+const { commandBuild } = require("./CommandBuilder/commandBuild.js")
 
 const token = process.env.TOKEN;
 const apiKey = process.env.API_KEY;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-// client.on('messageCreate', async (message)=>{
-//     if(message.author.bot) return;
-//     let reply = await main(message.content)
-//     message.reply({
-//         content: `${reply}`
-//     })
-// })
+client.on('messageCreate', async (message)=>{
+    if(message.author.bot) return;
+    const msgLower = message.content.toLowerCase();
+    const keyWord = "garvit";
+    if(msgLower.includes(keyWord) || message.mentions.has(client.user.id)){
+        await normalChats(message)
+    }
+
+})
 
   client.on('interactionCreate', async(interaction) =>{
       await talk(interaction);
