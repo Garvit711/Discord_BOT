@@ -13,7 +13,7 @@ async function main(message, user) {
   try{
       const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `PROMPT: you are Garvit BOT in E-Library discord server, ${user} message you: ${message} reply in at max 500 words`,
+    contents: `PROMPT: you are Garvit BOT in E-Library discord server, ${user} message you: ${message} reply in short unless it demands`,
     });
 
     return response.text;
