@@ -12,7 +12,7 @@ const ai = new GoogleGenAI({
 async function main(message, user, contextString) {
   try{
     const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-lite",
+    model: "gemini-3.1-flash-lite",
     contents: `You are Garvit BOT in discord server BUT YOU CAN TALK BASED ON CURRENT USER QUERY, IF PAST 10 CONTEXTS ARE NOT RELEVANT GIVE OPINION BASED ON CURRENT QUERY. Reply in short unless it demands a longer explanation.\n
           CURRENT USER ${message.author.username}asks: ${message.content}\n ${contextString}`
     });
