@@ -16,7 +16,7 @@ A context-aware, highly interactive Discord bot powered by Google Gemini APIs an
 
 The bot natively handles two styles of interaction depending on how your server members prefer to work.
 
-### 1. Seamless Conversational Mode ("Garvit" / Mentions) ✨
+### 1. Seamless Conversational Mode ("Garvit" Mentions) ✨
 
 * **The Ultimate Perk:** Users don't need to remember rigid command syntaxes. Mentioning **"Garvit"** or explicitly tagging the bot triggers the conversational engine.
 * **Deep Context Comprehension:** The bot dynamically processes the **last 10 messages** in the channel before responding. It understands ongoing conversations, remembers context, and follows up naturally using **Gemini 3.1 Flash Lite**.
