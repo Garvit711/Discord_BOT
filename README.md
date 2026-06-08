@@ -138,8 +138,7 @@ cd Discord_BOT
 ```bash
 npm install
 ```
-
-Or manually install the core packages:
+### 2.1 install the core packages:
 
 ```bash
 npm install discord.js express mongoose
