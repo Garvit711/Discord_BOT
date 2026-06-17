@@ -33,7 +33,7 @@ CLASSIFICATION RULES:
 ${contextString}
 
 === TEMPORAL CONTEXT ===
-CURRENT DATE/TIME: ${currentDateTime}
+CURRENT DATE/TIME (IST): ${currentDateTime}
 
 === THE TARGET TO EVALUATE ===
 CURRENT USER: ${message.author.globalName}
@@ -67,7 +67,7 @@ CONVERSATION & BOUNDARY RULES:
 - If the user brings up sensitive, heavy, or serious personal topics (mental health, deep emotional struggles, crisis), do NOT act as a therapist. Offer a brief, grounded, and supportive word, maintain respectful boundaries, and do not dive deeper.
 
 === TEMPORAL CONTEXT ===
-CURRENT DATE/TIME: ${currentDateTime}
+CURRENT DATE/TIME (IST): ${currentDateTime}
 
 === CURRENT CHAT ===
 USER: ${user}
