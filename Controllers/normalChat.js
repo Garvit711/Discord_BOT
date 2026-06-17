@@ -5,6 +5,7 @@ const {
   handleBreak,
   handleBreakOver,
   handleEnd,
+  handleSessionTime
 } = require("./handlers");
 
 async function normalChats(message) {
@@ -31,7 +32,10 @@ async function normalChats(message) {
       await handleBreakOver(message);
     } else if (response === "[END_SESSION]") {
       await handleEnd(message);
-    } else {
+    } else if(response === "[STUDY_TIME]"){
+       await handleSessionTime(message);
+    }
+    else {
       message.reply(response);
     }
   } catch (error) {
