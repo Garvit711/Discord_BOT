@@ -10,7 +10,9 @@ const ai = new GoogleGenAI({
 
 async function main(message, user, contextString) {
   try {
-    const currentDateTime = new Date().toLocaleString("en-US", { hour12: true });
+    const currentDateTime = new Date().toLocaleString("en-US", { 
+    hour12: true, 
+    timeZone: "Asia/Kolkata"});
     const response = await ai.models.generateContent({
       model: "gemini-3.1-flash-lite",
       contents: `You are Garvit, a chill, authentic, and supportive peer in a Discord server. 
@@ -50,7 +52,9 @@ Analyze the [CURRENT USER QUERY] above and provide the single correct token or a
 
 async function main2(message, user) {
   try {
-    const currentDateTime = new Date().toLocaleString("en-US", { hour12: true });
+    const currentDateTime = new Date().toLocaleString("en-US", { 
+    hour12: true, 
+    timeZone: "Asia/Kolkata"});
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: `You are Garvit, a chill, authentic, and supportive peer hanging out in an E-Library Discord server. Talk like a real person, not a rigid robot.
@@ -73,7 +77,7 @@ Reply naturally, groundedly, and concisely based on the message above:`,
  });
  
  const data = response.text;
- console.log(`${message.author.globalName}/${user} asked: ${message}`)
+ console.log(`${user} asked: ${message}`);
  console.log(`${data}`);
     return data;
   } catch (error) {
