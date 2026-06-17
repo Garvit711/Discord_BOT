@@ -8,6 +8,8 @@ async function handleStart(message) {
   try {
     const activeSession = await StudySession.findOne({
       userId: userId,
+      guildId: guildId,
+      channelId: channelId,
       status: { $in: ["studying", "on_break"] },
     });
     if (activeSession) {
@@ -43,6 +45,8 @@ async function handleBreak(message) {
   try {
     const session = await StudySession.findOne({
       userId: userId,
+      guildId: guildId,
+      channelId: channelId,
       status: { $in: ["studying", "on_break"] },
     });
     if (!session) {
@@ -118,6 +122,8 @@ async function handleBreakOver(message) {
   try {
     const session = await StudySession.findOne({
       userId: userId,
+      guildId: guildId,
+      channelId: channelId,
       status: { $in: ["studying", "on_break"] },
     });
     if (!session) {
@@ -148,9 +154,13 @@ async function handleBreakOver(message) {
 
 async function handleEnd(message) {
   const userId = message.author.id;
+  const guildId = message.guildId;
+  const channelId = message.channelId;
   try {
     const session = await StudySession.findOne({
       userId: userId,
+      guildId: guildId,
+      channelId: channelId,
       status: { $in: ["studying", "on_break"] },
     });
     if (!session) {
@@ -193,9 +203,13 @@ async function handleEnd(message) {
 }
 const userTimeouts = new Map();
 async function setTimeOut(userId, delay, breakMins, sessionId, message){
-    if(userTimeouts.has(userId)){
-        clearTimeout(userTimeouts.get(userId));
-        userTimeouts.delete(userId);
+  let guild = message.guildId;
+  let channel = message.channelId;
+  const unique = userId+guild+channel;
+  
+    if(userTimeouts.has(unique)){
+        clearTimeout(userTimeouts.get(unique));
+        userTimeouts.delete(unique);
     }
     const newTimeout = setTimeout(async ()=>{
         const currentSession = await StudySession.findById(sessionId);
@@ -210,16 +224,20 @@ async function setTimeOut(userId, delay, breakMins, sessionId, message){
                 message.channel.send(
               `<@${userId}>, ⏰ **Your ${breakMins}-minute break is over!** Time to dive back in.`);
         }
-        userTimeouts.delete(userId);
+        userTimeouts.delete(unique);
     }, delay * 60 * 1000);
-     userTimeouts.set(userId, newTimeout);
+     userTimeouts.set(unique, newTimeout);
 }
 
 async function handleSessionTime(message){
     const userId = message.author.id;
+    const guildId = message.guildId;
+    const channelId = message.channelId;
     try{
         const session = await StudySession.findOne({
         userId: userId,
+        guildId: guildId,
+       channelId: channelId,
         status: { $in: ["studying", "on_break"] },
       });
       if (!session) {
