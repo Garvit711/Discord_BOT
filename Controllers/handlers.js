@@ -45,69 +45,64 @@ async function handleBreak(message) {
       userId: userId,
       status: { $in: ["studying", "on_break"] },
     });
-
     if (!session) {
       message.reply(
         `${message.author.globalName} you are not active on study right now I cant do it`,
       );
     } else if (session.status === "on_break") {
-      // Check if they want to adjust the time instead of denying them then
+      // will add handling hours and seconds
+      // also no extend or increase is there only change is possible
       const numberMatch = text.match(/\d+/);
-
       if (numberMatch) {
-        let breakMinutes = parseInt(numberMatch[0]);
         if (session.breaks.length > 0) {
-          session.breaks[session.breaks.length - 1].durationExpected =
-            breakMinutes;
+          let breakMins = parseInt(numberMatch[0]);
+          if(text.includes('hour')){
+             breakMins *= 60;
+          }
+          if(text.includes('second')){
+             breakMins /= 60;
+          }
+          const currentBreak = session.breaks.find(
+            (b) => b.breakStartTime && !b.breakEndTime,
+          );
+          const now = new Date();
+          const totalElapsed = now - new Date(currentBreak.breakStartTime);
+          const elapsedSeconds = Math.floor(totalElapsed / 1000);
+          const elapsedMins = Math.floor(elapsedSeconds / 60);
+          if (elapsedMins >= breakMins) {
+            message.reply(
+              `<@${userId}> 🚨 Boss, we're already past that break time.`,
+            );
+          } else {
+            session.breaks[session.breaks.length - 1].durationExpected =
+              breakMins;
+            await session.save();
+            const timeOutDelay = breakMins - elapsedMins;
+            message.reply(`<@${userId}> 🔄 Your break has been updated to ${breakMins} mins.`);
+            setTimeOut(userId, timeOutDelay, breakMins, session._id, message);
+          }
         }
-        await session.save();
-        message.reply(
-          `🔧 **Break Updated!** I've adjusted your current break timer to **${breakMinutes} minutes**.`,
-        );
-      } else if (text.includes("extend") || text.includes("increase")) {
-        message.reply(
-          `Break: 100% | 📚 Study: 0% — Extension of break denied ❌😭`,
-        );
       } else {
-        message.reply(`😭🙏 Bro, you're already on a break.`);
+        message.reply(`<@${userId}> 🕒 Boss, what would you like to change the time to?`);
       }
     } else {
-      const numberMatch = text.match(/\d+/); // Parsing the break time
-      let breakMinutes = 10; // Default time
-
+      const numberMatch = text.match(/\d+/);
+      let breakMins = 10;
       if (numberMatch) {
-        breakMinutes = parseInt(numberMatch[0]);
+        breakMins = parseInt(numberMatch[0]);
+        if(text.includes('hour')) breakMins *= 60;
+        if(text.includes('second')) breakMins /= 60;
       }
       session.status = "on_break";
       session.breaks.push({
         breakStartTime: new Date(),
-        durationExpected: breakMinutes,
+        durationExpected: breakMins,
       });
       await session.save();
       message.reply(
-        `☕ **Break mode active!** Your ${breakMinutes}-minute timer starts now. Go clear your head!`,
+        `☕ **Break mode active!** Your ${breakMins}-minute timer starts now. Go clear your head!`,
       );
-
-      // Handling Break time to do the PING
-      setTimeout(
-        async () => {
-          const currentSession = await StudySession.findById(session._id);
-          if (currentSession && currentSession.status === "on_break") {
-            currentSession.status = "studying";
-            if (currentSession.breaks.length > 0) {
-              currentSession.breaks[
-                currentSession.breaks.length - 1
-              ].breakEndTime = new Date();
-            }
-
-            await currentSession.save();
-            message.channel.send(
-              `<@${userId}>, ⏰ **Your ${breakMinutes}-minute break is over!** Time to dive back in.`,
-            );
-          }
-        },
-        breakMinutes * 60 * 1000,
-      );
+      setTimeOut(userId, breakMins, breakMins, session._id, message);
     }
   } catch (error) {
     console.log("Break Creation Error", error);
@@ -135,6 +130,10 @@ async function handleBreakOver(message) {
         session.breaks[session.breaks.length - 1].breakEndTime = new Date();
       }
       await session.save();
+       if(userTimeouts.has(userId)){   // this will remove the PING 
+        clearTimeout(userTimeouts.get(userId));
+         userTimeouts.delete(userId);
+      }
       return message.reply(
         "🚀 **Welcome back!** Your break has been logged as finished. Back to grinding!",
       );
@@ -192,4 +191,70 @@ async function handleEnd(message) {
     message.reply(`Unable to END the session right now`);
   }
 }
-module.exports = { handleStart, handleBreak, handleBreakOver, handleEnd };
+const userTimeouts = new Map();
+async function setTimeOut(userId, delay, breakMins, sessionId, message){
+    if(userTimeouts.has(userId)){
+        clearTimeout(userTimeouts.get(userId));
+        userTimeouts.delete(userId);
+    }
+    const newTimeout = setTimeout(async ()=>{
+        const currentSession = await StudySession.findById(sessionId);
+        if (currentSession && currentSession.status === "on_break") {
+            currentSession.status = "studying";
+            if (currentSession.breaks.length > 0) {
+              currentSession.breaks[
+                currentSession.breaks.length - 1
+              ].breakEndTime = new Date();
+            }
+               await currentSession.save();
+                message.channel.send(
+              `<@${userId}>, ⏰ **Your ${breakMins}-minute break is over!** Time to dive back in.`);
+        }
+        userTimeouts.delete(userId);
+    }, delay * 60 * 1000);
+     userTimeouts.set(userId, newTimeout);
+}
+
+async function handleSessionTime(message){
+    const userId = message.author.id;
+    try{
+        const session = await StudySession.findOne({
+        userId: userId,
+        status: { $in: ["studying", "on_break"] },
+      });
+      if (!session) {
+      message.reply(
+        `Bro, you haven't started studying yet, stop imagining the victory edit 💀🔥`,
+      );
+    }
+    else{
+        const checkTime = new Date();
+        let totalStudyTime = checkTime - session.startTime;
+          let breakTime = 0;
+          if (session.breaks && session.breaks.length > 0) {
+        session.breaks.forEach((b) => {
+          const startTime = new Date(b.breakStartTime);
+          const breakEnd = b.breakEndTime ? new Date(b.breakEndTime) : checkTime;
+
+          breakTime += breakEnd - startTime;
+        });
+       }
+       let effectiveStudyTime = (totalStudyTime - breakTime) / (1000 * 60);
+       let finalCalculated = Math.max(0, Math.round(effectiveStudyTime));
+       if(finalCalculated <= 0){
+          message.reply(`<@${userId}> 😭 0 minutes studied. Stop romanticizing productivity and actually begin.`);
+       }
+       else{
+          message.reply(`<@${userId}> 🌟 You've studied for ${finalCalculated} minutes so far. Future you will thank you for today's effort. 📚`)
+       }
+
+    }
+
+ }
+    catch(error){
+        console.log("Error while getting the session time", error);
+        message.reply(`<@${userId}> I am unable to get your session time right now`)
+    }
+}
+
+module.exports = { handleStart, handleBreak, handleBreakOver, handleEnd, handleSessionTime };

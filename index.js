@@ -1,10 +1,11 @@
+
 const {
   Client,
   Events,
   GatewayIntentBits,
   SlashCommandBuilder,
 } = require("discord.js");
-// const { token , apiKey, MONGODB_URI} = require('./config.json');
+// const { token , apiKey, MONGODB_URI } = require('./config.json');
 const { main, main2 } = require("./Gemini_API/Gemini");
 const { talk } = require("./Controllers/commandTalk");
 const { normalChats } = require("./Controllers/normalChat");
@@ -32,6 +33,7 @@ const client = new Client({
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   // console.log(message);
+  console.log(`${message.author.globalName}/${message.author.username} asked: ${message}`);
   const msgLower = message.content.toLowerCase();
   const keyWord = "garvit";
   if (msgLower.includes(keyWord) || message.mentions.has(client.user.id)) {

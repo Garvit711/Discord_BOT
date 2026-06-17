@@ -1,10 +1,11 @@
 const { REST, Routes , SlashCommandBuilder} = require('discord.js');
 // const {token} = require("./config.json")
-// const { token, apiKey } = require("../config.json")
+// const { token, apiKey, CLIENTID } = require("../config.json")
 const {main, main2} = require("../Gemini_API/Gemini")
 
 const token = process.env.TOKEN;
 const apiKey = process.env.API_KEY;
+const CLIENTID = process.env.CLIENTID;
 
 const command = new SlashCommandBuilder()
   .setName("garvit")
@@ -21,7 +22,7 @@ const rest = new REST({ version: '10' }).setToken(token);
         console.log('Started refreshing application (/) commands.');
 
         await rest.put(
-            Routes.applicationCommands('1512666816500203610'),
+            Routes.applicationCommands(CLIENTID),
             { body: commands },
         );
 
