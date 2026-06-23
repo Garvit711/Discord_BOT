@@ -1,3 +1,6 @@
+
+// const dns = require("dns")
+// dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 const mongoose = require("mongoose");
 async function MongoDB(url) {
   return await mongoose
@@ -48,7 +51,30 @@ const studySessionSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
 });
 
+const userModeSchema = new mongoose.Schema({
+   userId: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  guildId: {
+    type: String,
+    required: true,
+  },
+  channelId: {
+    type: String,
+    required: true,
+  },
+  mode: {
+    type: Number,
+    default: 1,
+  }
+
+})
+
 const StudySession = mongoose.model("StudySession", studySessionSchema);
-module.exports = { StudySession, MongoDB };
+const userModes = mongoose.model("userModes", userModeSchema);
+module.exports = { StudySession, MongoDB , userModes};

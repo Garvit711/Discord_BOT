@@ -12,7 +12,7 @@ async function talk(interaction) {
       await interaction.editReply(`${reply}`);
     } catch (error) {
       console.log(`talk error ${error}`);
-      await interaction.editReply(`I ran into an error`);
+      await interaction.editReply(`Network connection Issue`);
     }
   }
 }

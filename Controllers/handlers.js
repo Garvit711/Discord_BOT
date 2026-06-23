@@ -37,7 +37,7 @@ async function handleStart(message) {
   }
 }
 
-async function handleBreak(message) {
+async function handleBreak(message, response) {
   const userId = message.author.id;
   const guildId = message.guildId;
   const channelId = message.channelId;
@@ -56,14 +56,18 @@ async function handleBreak(message) {
     } else if (session.status === "on_break") {
       // will add handling hours and seconds
       // also no extend or increase is there only change is possible
-      const numberMatch = text.match(/\d+/);
+      if(!response.includes("CHANGE")){
+          return await message.reply(`💀🍔 BRO IS ALREADY ON A BREAK AND WANTS ANOTHER ONE 😭🙏`);
+      }
+      const numberMatch = response.match(/\d+/);
+      let breakMins = 10;
       if (numberMatch) {
         if (session.breaks.length > 0) {
           let breakMins = parseInt(numberMatch[0]);
-          if(text.includes('hour')){
+          if(response.includes('hour')){
              breakMins *= 60;
           }
-          if(text.includes('second')){
+          if(response.includes('second')){
              breakMins /= 60;
           }
           const currentBreak = session.breaks.find(
@@ -90,12 +94,15 @@ async function handleBreak(message) {
         message.reply(`<@${userId}> 🕒 Boss, what would you like to change the time to?`);
       }
     } else {
-      const numberMatch = text.match(/\d+/);
+      if(response.includes("CHANGE")){
+        return await message.reply(`🍔💀 Bro is managing imaginary break schedules now 😭 You haven't even started a break yet 💀`)
+      }
+      const numberMatch = response.match(/\d+/);
       let breakMins = 10;
       if (numberMatch) {
         breakMins = parseInt(numberMatch[0]);
-        if(text.includes('hour')) breakMins *= 60;
-        if(text.includes('second')) breakMins /= 60;
+        if(response.includes('hour')) breakMins *= 60;
+        if(response.includes('second')) breakMins /= 60;
       }
       session.status = "on_break";
       session.breaks.push({
