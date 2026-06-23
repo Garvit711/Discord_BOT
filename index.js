@@ -35,7 +35,7 @@ client.on("messageCreate", async (message) => {
   // console.log(message);
   console.log(`${message.author.globalName}/${message.author.username} asked: ${message}`);
   const msgLower = message.content.toLowerCase();
-  const keyWord = "garry";
+  const keyWord = "garvit";
   if (msgLower.includes(keyWord) || message.mentions.has(client.user.id)) {
     await normalChats(message);
   }
