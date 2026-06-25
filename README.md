@@ -155,7 +155,6 @@ TOKEN=your_discord_bot_token
 API_KEY=your_gemini_api_key
 MONGODB_URI=your_mongodb_atlas_connection_string
 GUILD_ID=your_development_server_id
-PORT=3000
 ```
 
 ---
