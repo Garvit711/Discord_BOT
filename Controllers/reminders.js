@@ -20,7 +20,7 @@ async function setReminder(message, response){
         if(response.includes('hour')) breakMins *= 60;
         if(response.includes('second')) breakMins /= 60;
       }
-      if(breakMins > 120){
+      if(breakMins > 360){
          return await message.reply(`🤖 Sorry, but I'm not getting paid enough to babysit your break for ${breakMins} minutes 💀☕😂`)
       }
        await setTimeOut(userId, breakMins, message, null);
