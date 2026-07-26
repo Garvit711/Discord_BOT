@@ -31,7 +31,7 @@ const client = new Client({
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
+  if (message.author.bot && message.author.id === "1512666816500203610") return;
   // console.log(message);
   console.log(`${message.author.globalName}/${message.author.username} asked: ${message}`);
   const msgLower = message.content.toLowerCase();
