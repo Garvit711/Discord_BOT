@@ -30,6 +30,10 @@ const client = new Client({
   ],
 });
 
+client.once("ready", (c) => {
+  console.log(` Discord Bot is online and Logged in as ${c.user.tag}`);
+});
+
 client.on("messageCreate", async (message) => {
   if (message.author.bot && message.author.id === "1512666816500203610") return;
   // console.log(message);
@@ -45,7 +49,10 @@ client.on("interactionCreate", async (interaction) => {
   await talk(interaction);
 });
 
-client.login(token);
+client.login(token).catch((err) => {
+  console.error("FATAL: Failed to login to Discord!");
+  console.error(err);
+});
 
 const express = require("express");
 const PORT = process.env.PORT || 3000;
