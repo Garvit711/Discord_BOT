@@ -33,6 +33,7 @@ const client = new Client({
 client.once("ready", (c) => {
   console.log(` Discord Bot is online and Logged in as ${c.user.tag}`);
 });
+client.on("debug", console.log);
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot && message.author.id === "1512666816500203610") return;
